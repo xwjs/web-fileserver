@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
 import os
 import datetime
 import math
+from zipfile import ZipFile
 
 def get_type(filepath):
     if os.path.isdir(filepath):
@@ -44,11 +46,6 @@ def get_all(root,route,list_dot):
     
     dir=os.path.join(root,route)
 
-    print(f'root={root}')
-    print(f'route={route}')
-    print(f'dir={dir}')
-
-
     for f in os.listdir(dir):
         if list_dot==False:
             if f.startswith('.'):
@@ -69,3 +66,16 @@ def get_all(root,route,list_dot):
         files.append(f_info)
 
     return files
+
+
+
+def zip_dir(pre_path,dir_name):
+    path=os.path.join(pre_path,dir_name)
+    with ZipFile(path+'.zip', 'w') as zipf:
+        for root, dirs, files in os.walk(path):
+            for file in files:
+                file_path = os.path.join(root, file)
+                relative_path = os.path.relpath(file_path,path)
+                zipf.write(file_path, arcname=relative_path)
+
+    return path+'.zip'
